@@ -7,9 +7,12 @@ case class HttpRequest(method: String, uri: URI) {
   val path =
     if (uri.getPath.isEmpty) "/"
     else {
-      "/" +
-        URLEncoder.encode(uri.getPath.substring(1, uri.getPath.length), "UTF-8")
-        .replaceAll("\\*", "%2A")
+      val path =
+        uri.getPath.substring(1, uri.getPath.length)
+          .split("/")
+          .map(URLEncoder.encode(_, "UTF-8").replaceAll("\\*", "%2A"))
+          .mkString("/")
+      "/" + path
     }
 
   val query =
